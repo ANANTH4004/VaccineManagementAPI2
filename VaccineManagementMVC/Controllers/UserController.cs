@@ -117,7 +117,7 @@ namespace VaccineManagementMVC.Controllers
                 }
                 else
                 {
-                    ViewBag.Msg = "Incorrect password";
+                    ViewBag.Msg = "Password and Confirm Password Must be Same";
                 }
             }
             else
