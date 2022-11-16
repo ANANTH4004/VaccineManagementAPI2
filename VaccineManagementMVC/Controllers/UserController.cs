@@ -275,6 +275,7 @@ namespace VaccineManagementMVC.Controllers
             int userid =Convert.ToInt32(Session["userid"]);
             User user = new User();
             HttpResponseMessage response2 = client.GetAsync(client.BaseAddress + "/user/" + userid).Result;
+            bool complete = false;
             if (response2.IsSuccessStatusCode)
             {
                 String Data = response2.Content.ReadAsStringAsync().Result;
@@ -292,11 +293,29 @@ namespace VaccineManagementMVC.Controllers
             }
             else
             {
-                foreach (var item in collection)
+                foreach (var item in user.Slots)
                 {
-
+                    if(item.Status == "Booked")
+                    {
+                        TempData["msg"] = "Already Booked a Slot!!";
+                        complete = false;
+                        break;
+                    }
+                    else
+                    {
+                        complete = true;
+                    }
                 }
-                //ViewBag.msg = "Already Booked";
+                if (complete)
+                {
+                    s.UserId = Convert.ToInt32(Session["userid"]);
+                    s.Status = "Booked";
+                    string data = JsonConvert.SerializeObject(s);
+                    StringContent Content = new StringContent(data, Encoding.UTF8, "application/json");
+                    HttpResponseMessage response1 = client.PutAsync(baseAddress + "/slot/" + s.SlotId, Content).Result;
+                    return RedirectToAction("MySlots");
+                }
+               
             }
             return RedirectToAction("MySlots");
         }
@@ -363,7 +382,6 @@ namespace VaccineManagementMVC.Controllers
                 }
                 else
                 {
-
                     ViewBag.msg = "Already Booked";
                 }
             }

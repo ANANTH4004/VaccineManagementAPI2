@@ -143,6 +143,41 @@ namespace VaccineManagementMVC.Controllers
 
             return View(user.Slots);
         }
+        public ActionResult Completed(int id)
+        {
+
+            //User user = new User();
+            //HttpResponseMessage response = client.GetAsync(client.BaseAddress + "/user/" + id).Result;
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    string data = response.Content.ReadAsStringAsync().Result;
+            //    user = JsonConvert.DeserializeObject<User>(data);
+            //}
+            //user.Slots.First().Status = "Completed";
+            //string data1 = JsonConvert.SerializeObject(user);
+            //StringContent Content = new StringContent(data1, Encoding.UTF8, "application/json");
+            //HttpResponseMessage response1 = client.PutAsync(baseAddress + "/user/" + id, Content).Result;
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    return RedirectToAction("VaccinationDetails", new { id = id });
+            //}
+            Slot s = new Slot();
+            HttpResponseMessage response = client.GetAsync(client.BaseAddress + "/slot/" + id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                String Data = response.Content.ReadAsStringAsync().Result;
+                s = JsonConvert.DeserializeObject<Slot>(Data);
+            }
+            s.Status = "Completed";
+            string data = JsonConvert.SerializeObject(s);
+            StringContent Content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage respons1 = client.PutAsync(baseAddress + "/slot/" + id, Content).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Index");
+        }
        
 
     }
